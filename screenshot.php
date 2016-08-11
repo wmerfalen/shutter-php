@@ -100,7 +100,7 @@ class Shutter {
     }
 }
 
-$config = require('config.php');
+$config = require(__DIR__ . '/config.php');
 $window = null;
 if($argc == 2){
     $window = $argv[1];
@@ -108,8 +108,9 @@ if($argc == 2){
 (new Shutter($config))->handler('error',function($shutterObject){
         print("An error has occurred: " . $shutterObject->getErrorMessage());   
     })
-    ->handler('uploadSuccess',function($shutterObject){
-        shell_exec(sprintf($config['success_cmd'],$shutterObject->getOutputUrl()))
+    ->handler('uploadSuccess',function($shutterObject) use($config){
+        shell_exec($a = sprintf($config['success_cmd'],$shutterObject->getOutputUrl()));
+        echo "Execed: $a\n";
     })
     ->save($window)
     ->upload($config['upload_url'])
